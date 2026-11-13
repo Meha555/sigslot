@@ -1,5 +1,6 @@
 #include <sigslot/signal.hpp>
 #include <iostream>
+#include <functional>
 
 #define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
 
@@ -16,6 +17,7 @@ struct o {
 
 void basic_member_connect() {
     s d;
+    auto s_m = std::bind(&s::m, &d);
     auto lambda = []() { std::cout << "lambda\n"; };
 
     // declare a signal instance with no arguments
@@ -25,6 +27,7 @@ void basic_member_connect() {
     // arguments. Here are diverse examples
     sig.connect(f);
     sig.connect(&s::m, &d);
+    sig.connect(s_m);
     sig.connect(&s::sm);
     sig.connect(o());
     sig.connect(lambda);

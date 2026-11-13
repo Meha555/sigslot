@@ -888,7 +888,7 @@ private:
 };
 
 /*
- * A slot object holds state information, and a callable to to be called
+ * A slot object holds state information, and a callable to be called
  * whenever the function call operator of its slot_base base class is called.
  */
 template <typename Func, typename... Args>
@@ -1749,7 +1749,7 @@ private:
         lock_type lock(m_mutex);
         auto &groups = detail::cow_write(m_slots);
 
-        // find the group
+        // find the group, groups arg in ascending sequence
         auto it = groups.begin();
         while (it != groups.end() && it->gid < gid) {
             it++;

@@ -34,8 +34,8 @@ Implementation Details chapter for an explanation.
 
 A CMake list file is supplied for installation purpose and generating a CMake import
 module. This is the preferred installation method. The `Pal::Sigslot` imported target
-is available and already applies the needed linker flags. It is also required for
-examples and tests, which optionally depend on Qt5 and Boost for adapters unit tests.
+is available and already applies the needed linker flags. Examples and tests
+optionally depend on Qt5 and Boost for adapters unit tests.
 
 ```cmake
 # Using Sigslot from cmake
@@ -82,6 +82,40 @@ FetchContent_MakeAvailable(sigslot)
 add_executable(MyExe main.cpp)
 target_link_libraries(MyExe PRIVATE Pal::Sigslot)
 ```
+
+### Xmake
+
+The root `xmake.lua` defines project options and the `sigslot` target; `includes()`
+loads example and test targets from `example/xmake.lua` and `test/xmake.lua`.
+
+Xmake 2.8.5 or newer provides a header-only `sigslot` target. To use a local
+checkout from another Xmake project:
+
+```lua
+includes("path/to/sigslot")
+
+target("MyExe")
+    set_kind("binary")
+    add_files("main.cpp")
+    add_deps("sigslot")
+```
+
+The target exports its include directory, C++14 requirement, thread flags and
+`/OPT:NOICF` for MSVC-compatible linkers. Examples and tests are disabled by default.
+From the repository root:
+
+```sh
+xmake f -m release --examples=y --tests=y
+xmake
+xmake run sigslot-example-basic
+xmake test
+xmake install -o path/to/install sigslot
+```
+
+Set `--reduce_compile_time=y` to enable `SIGSLOT_REDUCE_COMPILE_TIME`.
+With `--tests=y`, `--with_boost=y` enables the Boost adapter test and resolves
+Boost through Xmake's package manager. `--with_qt=y` enables the Qt adapter test
+using an installed Qt SDK; pass `--qt=path/to/Qt/version/compiler` when needed.
 
 ## Documentation
 
